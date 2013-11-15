@@ -50,8 +50,8 @@ int main()
 
 	while(true)
 	{
-		cam >> image;
-		//Mat image = imread("C:\\Users\\bui\\Desktop\\8bit_full_grad_color.png");
+		//cam >> image;
+		Mat image = imread("C:\\Users\\bui\\Desktop\\colorchecker_expose.jpg");
 
 		imshow("image", image);
 		char c = waitKey(10);
@@ -60,12 +60,12 @@ int main()
 
 		for (int i=0; i<image.rows; i++)
 			for (int k=0; k<image.cols; k++) {
-				canvas.at<Vec3b>(i,k)[0] = (image.at<Vec3b>(i,k)[0] * 255 / bw) > 255 
-												? 255 : image.at<Vec3b>(i,k)[0] * 255 / bw;
-				canvas.at<Vec3b>(i,k)[1] = (image.at<Vec3b>(i,k)[1] * 255 / gw) > 255  
-												? 255 : image.at<Vec3b>(i,k)[1] * 255 / gw;
-				canvas.at<Vec3b>(i,k)[2] = (image.at<Vec3b>(i,k)[2] * 255 / rw) > 255  
-												? 255 : image.at<Vec3b>(i,k)[2] * 255 / rw;
+				canvas.at<Vec3b>(i,k)[0] = (image.at<Vec3b>(i,k)[0] * 216 / bw) > 255 
+												? 255 : image.at<Vec3b>(i,k)[0] * 216 / bw;
+				canvas.at<Vec3b>(i,k)[1] = (image.at<Vec3b>(i,k)[1] * 211 / gw) > 255  
+												? 255 : image.at<Vec3b>(i,k)[1] * 211 / gw;
+				canvas.at<Vec3b>(i,k)[2] = (image.at<Vec3b>(i,k)[2] * 210 / rw) > 255  
+												? 255 : image.at<Vec3b>(i,k)[2] * 210 / rw;
 			}
 		
 		setMouseCallback("image", onMouse, &image);

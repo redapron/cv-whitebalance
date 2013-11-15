@@ -50,7 +50,7 @@ int main()
 	while(true)
 	{
 		//cam >> image;
-		Mat image = imread("C:\\Users\\bui\\Desktop\\colorchecker_expose.jpg");
+		Mat image = imread("C:\\Users\\bui\\Desktop\\colorchecker_original.jpg");
 
 		imshow("image", image);
 		cvtColor(image, _image, CV_BGR2HSV);
@@ -67,21 +67,21 @@ int main()
 				if (hw==0) {
 					canvas.at<Vec3b>(i,k)[0] =  _image.at<Vec3b>(i,k)[0];
 				} else {
-					canvas.at<Vec3b>(i,k)[0] = (_image.at<Vec3b>(i,k)[0] * 0 / hw) > 180  
-												? 180 : _image.at<Vec3b>(i,k)[0] * 0 / hw;
+					canvas.at<Vec3b>(i,k)[0] = (_image.at<Vec3b>(i,k)[0] * 50 / hw) > 180  
+												? 180 : _image.at<Vec3b>(i,k)[0] * 50 / hw;
 				}
 				if (sw==0) {
 					canvas.at<Vec3b>(i,k)[1] = _image.at<Vec3b>(i,k)[1];
 				} else {
-					canvas.at<Vec3b>(i,k)[1] = (_image.at<Vec3b>(i,k)[1] * 0 / sw) > 255  
-												? 255 : _image.at<Vec3b>(i,k)[1] * 0 / sw;
+					canvas.at<Vec3b>(i,k)[1] = (_image.at<Vec3b>(i,k)[1] * 124 / sw) > 255  
+												? 255 : _image.at<Vec3b>(i,k)[1] * 124 / sw;
 				}
 				if (vw==0) {
 					canvas.at<Vec3b>(i,k)[2] = _image.at<Vec3b>(i,k)[2];
 				}
 				else {
-					canvas.at<Vec3b>(i,k)[2] = (_image.at<Vec3b>(i,k)[2] * 200 / vw) > 255  
-												? 255 : _image.at<Vec3b>(i,k)[2] * 200 / vw;
+					canvas.at<Vec3b>(i,k)[2] = (_image.at<Vec3b>(i,k)[2] * 148 / vw) > 255  
+												? 255 : _image.at<Vec3b>(i,k)[2] * 148 / vw;
 				}
 			
 			}

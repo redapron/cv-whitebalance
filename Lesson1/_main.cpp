@@ -19,7 +19,7 @@ void onMouse(int event, int x, int y, int flags, void* param)
 		gw = frame.at<Vec3b>(y,x)[1];
 		rw = frame.at<Vec3b>(y,x)[2];
 
-		Mat picker(100, 100, CV_8SC3, frame.at<Vec3b>(y,x));
+		Mat picker(100, 100, CV_8UC3, frame.at<Vec3b>(y,x));
 		imshow("picker", picker);
 	}
 }
@@ -51,6 +51,7 @@ int main()
 	while(true)
 	{
 		cam >> image;
+		//Mat image = imread("C:\\Users\\bui\\Desktop\\8bit_full_grad_color.png");
 
 		imshow("image", image);
 		char c = waitKey(10);
@@ -59,9 +60,12 @@ int main()
 
 		for (int i=0; i<image.rows; i++)
 			for (int k=0; k<image.cols; k++) {
-				canvas.at<Vec3b>(i,k)[0] = image.at<Vec3b>(i,k)[0] * 255 / bw;
-				canvas.at<Vec3b>(i,k)[1] = image.at<Vec3b>(i,k)[1] * 255 / gw;
-				canvas.at<Vec3b>(i,k)[2] = image.at<Vec3b>(i,k)[2] * 255 / rw;
+				canvas.at<Vec3b>(i,k)[0] = (image.at<Vec3b>(i,k)[0] * 255 / bw) > 255 
+												? 255 : image.at<Vec3b>(i,k)[0] * 255 / bw;
+				canvas.at<Vec3b>(i,k)[1] = (image.at<Vec3b>(i,k)[1] * 255 / gw) > 255  
+												? 255 : image.at<Vec3b>(i,k)[1] * 255 / gw;
+				canvas.at<Vec3b>(i,k)[2] = (image.at<Vec3b>(i,k)[2] * 255 / rw) > 255  
+												? 255 : image.at<Vec3b>(i,k)[2] * 255 / rw;
 			}
 		
 		setMouseCallback("image", onMouse, &image);

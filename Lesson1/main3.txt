@@ -1,0 +1,105 @@
+
+#include <iostream>
+#include <opencv\cv.h>
+#include <opencv2\highgui.hpp>
+#include <opencv2\imgproc.hpp>
+
+using namespace std;
+
+cv::Mat image;
+cv::Mat rgbImg;
+cv::Mat hsvImg;
+
+cv::VideoCapture cam;
+
+int main()
+{
+	cam.open(0);
+
+	while(true)
+	{
+		cam >> image;
+		image.copyTo(rgbImg);
+		cv::cvtColor(image, hsvImg, CV_BGR2HSV);
+		cv::imshow("image", image);
+
+		// RGB
+		for(int i = 0; i < rgbImg.rows; i++)
+		{
+			for(int j = 0; j < rgbImg.cols; j++)
+			{
+				int r = rgbImg.at<cv::Vec3b>(i, j)[2];
+				int g = rgbImg.at<cv::Vec3b>(i, j)[1];
+				int b = rgbImg.at<cv::Vec3b>(i, j)[0];
+
+				if( r > g + b )
+				{
+					rgbImg.at<cv::Vec3b>(i, j)[2] = 255;
+					rgbImg.at<cv::Vec3b>(i, j)[1] = 0;
+					rgbImg.at<cv::Vec3b>(i, j)[0] = 0;
+				}
+				if( g > r + b )
+				{
+					rgbImg.at<cv::Vec3b>(i, j)[2] = 0;
+					rgbImg.at<cv::Vec3b>(i, j)[1] = 255;
+					rgbImg.at<cv::Vec3b>(i, j)[0] = 0;
+				}
+				if( b > r + g )
+				{
+					rgbImg.at<cv::Vec3b>(i, j)[2] = 0;
+					rgbImg.at<cv::Vec3b>(i, j)[1] = 0;
+					rgbImg.at<cv::Vec3b>(i, j)[0] = 255;
+				}
+			}
+		}
+		cv::imshow("rgbImg", rgbImg);
+
+		// HSV
+		for(int i = 0; i < hsvImg.rows; i++)
+		{
+			for(int j = 0; j < hsvImg.cols; j++)
+			{
+				int h = hsvImg.at<cv::Vec3b>(i, j)[0];
+				int s = hsvImg.at<cv::Vec3b>(i, j)[1];
+				int v = hsvImg.at<cv::Vec3b>(i, j)[2];
+
+				if( (160 <= h || h <= 20) && 50 <= s && s <= 255 && 50 <= v && v <= 255 )
+				{
+					hsvImg.at<cv::Vec3b>(i, j)[0] = 0;
+					hsvImg.at<cv::Vec3b>(i, j)[1] = 255;
+					hsvImg.at<cv::Vec3b>(i, j)[2] = 255;
+				}
+				if( 40 <= h && h <= 80 && 50 <= s && s <= 255 && 50 <= v && v <= 255 )
+				{
+					hsvImg.at<cv::Vec3b>(i, j)[0] = 60;
+					hsvImg.at<cv::Vec3b>(i, j)[1] = 255;
+					hsvImg.at<cv::Vec3b>(i, j)[2] = 255;
+				}
+				if( 100 <= h && h <= 140 && 50 <= s && s <= 255 && 50 <= v && v <= 255 )
+				{
+					hsvImg.at<cv::Vec3b>(i, j)[0] = 120;
+					hsvImg.at<cv::Vec3b>(i, j)[1] = 255;
+					hsvImg.at<cv::Vec3b>(i, j)[2] = 255;
+				}
+
+				//if( 50 <= s && s <= 255 && 50 <= v && v <= 255 )
+				//{
+				//	hsvImg.at<cv::Vec3b>(i, j)[1] = 255;
+				//	hsvImg.at<cv::Vec3b>(i, j)[2] = 255;
+				//}
+			}
+		}
+
+		cv::cvtColor(hsvImg, hsvImg, CV_HSV2BGR);
+		cv::imshow("hsvImg", hsvImg);
+
+		char c = cv::waitKey(10);
+
+		if( c == 27 )
+			break;
+	}
+
+	cam.release();
+
+	return 0;
+}

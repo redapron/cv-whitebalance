@@ -2,25 +2,29 @@
 #include <iostream>
 #include <opencv\cv.h>
 #include <opencv2\highgui.hpp>
+#include <opencv2\imgproc.hpp>
 
 using namespace std;
 using namespace cv;
 
-int bw=1, gw=1, rw=1;
+int hw=1, sw=1, vw=1;
 
 void onMouse(int event, int x, int y, int flags, void* param)
 {
 	if (event == EVENT_LBUTTONDOWN) {
 		Mat frame;
 		frame = *((Mat*)param);
-
-		//cout << frame.at<Vec3b>(y,x);
-		bw = frame.at<Vec3b>(y,x)[0];
-		gw = frame.at<Vec3b>(y,x)[1];
-		rw = frame.at<Vec3b>(y,x)[2];
+		
+		cvtColor(frame, frame, CV_BGR2HSV);
+		hw = frame.at<Vec3b>(y,x)[0];
+		sw = frame.at<Vec3b>(y,x)[1];
+		vw = frame.at<Vec3b>(y,x)[2];
 
 		Mat picker(100, 100, CV_8UC3, frame.at<Vec3b>(y,x));
+		cvtColor(picker, picker, CV_HSV2BGR);
 		imshow("picker", picker);
+
+		cout << frame.at<Vec3b>(y,x);
 	}
 }
 
@@ -29,24 +33,19 @@ void _onMouse(int event, int x, int y, int flags, void* param)
 	if (event == EVENT_LBUTTONDOWN) {
 		Mat frame;
 		frame = *((Mat*)param);
-
+		cvtColor(frame, frame, CV_BGR2HSV);
 		cout << frame.at<Vec3b>(y,x);
 	}
 }
 
 
 Mat canvas(480, 640, CV_8UC3);
-Mat image;
+Mat image, _image;
 VideoCapture cam;
 
 int main()
 {
 	cam.open(0);
-	/*(16:9) = (1920, 1080), (1280, 720)*/
-	/*(4:3) = (640, 480), (320, 240)*/
-	//cam.set(CV_CAP_PROP_FRAME_WIDTH, 320);
-	//cam.set(CV_CAP_PROP_FRAME_HEIGHT, 240);
-	//cam.set(CV_CAP_PROP_FPS, 30);
 
 	while(true)
 	{
@@ -54,23 +53,45 @@ int main()
 		Mat image = imread("C:\\Users\\bui\\Desktop\\colorchecker_expose.jpg");
 
 		imshow("image", image);
-		char c = waitKey(10);
+		cvtColor(image, _image, CV_BGR2HSV);
 
-		imshow("canvas", canvas);
-
+		//cout << _image.at<Vec3b>(284,301) << endl;
+		//cout << hw << ", " << sw << ", " << vw << endl;
 		for (int i=0; i<image.rows; i++)
 			for (int k=0; k<image.cols; k++) {
-				canvas.at<Vec3b>(i,k)[0] = (image.at<Vec3b>(i,k)[0] * 216 / bw) > 255 
-												? 255 : image.at<Vec3b>(i,k)[0] * 216 / bw;
-				canvas.at<Vec3b>(i,k)[1] = (image.at<Vec3b>(i,k)[1] * 211 / gw) > 255  
-												? 255 : image.at<Vec3b>(i,k)[1] * 211 / gw;
-				canvas.at<Vec3b>(i,k)[2] = (image.at<Vec3b>(i,k)[2] * 210 / rw) > 255  
-												? 255 : image.at<Vec3b>(i,k)[2] * 210 / rw;
+			
+			//	canvas.at<Vec3b>(i,k)[0] = _image.at<Vec3b>(i,k)[0];
+			//	canvas.at<Vec3b>(i,k)[1] = _image.at<Vec3b>(i,k)[1];
+			//	canvas.at<Vec3b>(i,k)[2] = _image.at<Vec3b>(i,k)[2];
+			
+				if (hw==0) {
+					canvas.at<Vec3b>(i,k)[0] =  _image.at<Vec3b>(i,k)[0];
+				} else {
+					canvas.at<Vec3b>(i,k)[0] = (_image.at<Vec3b>(i,k)[0] * 0 / hw) > 180  
+												? 180 : _image.at<Vec3b>(i,k)[0] * 0 / hw;
+				}
+				if (sw==0) {
+					canvas.at<Vec3b>(i,k)[1] = _image.at<Vec3b>(i,k)[1];
+				} else {
+					canvas.at<Vec3b>(i,k)[1] = (_image.at<Vec3b>(i,k)[1] * 0 / sw) > 255  
+												? 255 : _image.at<Vec3b>(i,k)[1] * 0 / sw;
+				}
+				if (vw==0) {
+					canvas.at<Vec3b>(i,k)[2] = _image.at<Vec3b>(i,k)[2];
+				}
+				else {
+					canvas.at<Vec3b>(i,k)[2] = (_image.at<Vec3b>(i,k)[2] * 200 / vw) > 255  
+												? 255 : _image.at<Vec3b>(i,k)[2] * 200 / vw;
+				}
+			
 			}
+		cvtColor(canvas, canvas, CV_HSV2BGR);
+		imshow("canvas", canvas);
 		
 		setMouseCallback("image", onMouse, &image);
 		setMouseCallback("canvas", _onMouse, &canvas);
 
+		char c = waitKey(10);
 		if( c == 27 ) {
 			break;
 		}

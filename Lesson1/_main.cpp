@@ -9,6 +9,26 @@ using namespace cv;
 
 int hw=1, sw=1, vw=1;
 
+int lagrange(int ask){
+	int n=4;
+	double x[10] = {1, 2, 3};
+	double fx[10] = {1, 8, 27};
+	double num, den;
+	double ans=0;
+	for (int i=0; i<n; i++){
+		num=1;
+		den=1;
+		for (int k=0; k<n; k++){
+			if (i!=k){
+				num *= ask-x[k];
+				den *= x[i]-x[k];
+			}
+		}
+		ans += fx[i]*num/den;
+	}
+	return ans;
+}
+
 void onMouse(int event, int x, int y, int flags, void* param)
 {
 	if (event == EVENT_LBUTTONDOWN) {
@@ -93,6 +113,7 @@ int main()
 
 		char c = waitKey(10);
 		if( c == 27 ) {
+			cout << lagrange(8) << endl;
 			break;
 		}
 	}

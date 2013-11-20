@@ -14,7 +14,7 @@ cv::Mat hsvImg;
 
 cv::VideoCapture cam;
 
-int thres[3][6] = {{0, 20, 50, 255, 50, 255}, {40, 80, 50, 255, 50, 255}, {100, 140, 50, 255, 50, 255}};
+int thres[3][6] = {{0, 20, 50, 255, 50, 255}, {0, 0, 50, 255, 50, 255}, {0, 0, 50, 255, 50, 255}};
 int currColor = 0;
 
 int center[3][2];
@@ -35,7 +35,7 @@ int main()
 		//startTime = clock();
 
 		//cam >> image;
-		image = cv::imread("C:\\Users\\bui\\Desktop\\_000-sensor\\cv-whitebalance\\data\\image1384353593.bmp");
+		image = cv::imread("C:\\Users\\bui\\Desktop\\_000-sensor\\Hsv_Value_Chart.png");
 		cv::cvtColor(image, hsvImg, CV_BGR2HSV);
 		cv::imshow("image", image);
 
@@ -79,8 +79,9 @@ int main()
 			if( pixelCnt[k] > 0 )
 			{
 				char text[200];
-				sprintf(text, "%d = %d", k, pixelCnt[k]);
-				cout << "text : " << text << endl;
+				//sprintf(text, "%d = %d", k, pixelCnt[k]);
+				sprintf(text, "%d", k);
+				//cout << "text : " << text << endl;
 
 				center[k][0] /= pixelCnt[k];
 				center[k][1] /= pixelCnt[k];

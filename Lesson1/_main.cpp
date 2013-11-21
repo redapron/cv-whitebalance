@@ -14,11 +14,14 @@ cv::Mat hsvImg;
 
 cv::VideoCapture cam;
 
-int thres[3][6] = {{0, 20, 50, 255, 50, 255}, {0, 0, 50, 255, 50, 255}, {0, 0, 50, 255, 50, 255}};
+int thres[12][6] = { {0, 20, 50, 255, 50, 255}, {0, 0, 50, 255, 50, 255}, {0, 0, 50, 255, 50, 255},
+					{0, 20, 50, 255, 50, 255}, {0, 0, 50, 255, 50, 255}, {0, 0, 50, 255, 50, 255},
+					{0, 20, 50, 255, 50, 255}, {0, 0, 50, 255, 50, 255}, {0, 0, 50, 255, 50, 255}
+				   };
 int currColor = 0;
 
-int center[3][2];
-int pixelCnt[3];
+int center[12][2];
+int pixelCnt[12];
 
 int main()
 {
@@ -39,7 +42,7 @@ int main()
 		cv::cvtColor(image, hsvImg, CV_BGR2HSV);
 		cv::imshow("image", image);
 
-		for(int k = 0; k < 3; k++)
+		for(int k = 0; k < 12; k++)
 		{
 			pixelCnt[k] = 0;
 			center[k][0] = center[k][1] = 0;
@@ -54,7 +57,7 @@ int main()
 				int s = hsvImg.at<cv::Vec3b>(i, j)[1];
 				int v = hsvImg.at<cv::Vec3b>(i, j)[2];
 
-				for(int k = 0; k < 3; k++)
+				for(int k = 0; k < 12; k++)
 				{
 					if( thres[k][0] <= h && h <= thres[k][1] &&
 						thres[k][2] <= s && s <= thres[k][3] &&
@@ -74,7 +77,7 @@ int main()
 
 		cv::cvtColor(hsvImg, hsvImg, CV_HSV2BGR);
 
-		for(int k = 0; k < 3; k++)
+		for(int k = 0; k < 12; k++)
 		{
 			if( pixelCnt[k] > 0 )
 			{
@@ -124,7 +127,7 @@ int main()
 		if( c == '6' ) // Save
 		{
 			ofstream record("../data/color.txt");
-			for(int i = 0; i < 3; i++)
+			for(int i = 0; i < 12; i++)
 			{
 				for(int j = 0; j < 6; j++)
 					record << thres[i][j] << " ";
@@ -136,7 +139,7 @@ int main()
 		if( c == '5' ) // Load
 		{
 			ifstream file("../data/color.txt");
-			for(int i = 0; i < 3; i++)
+			for(int i = 0; i < 12; i++)
 				for(int j = 0; j < 6; j++)
 					file >> thres[i][j];
 			file.close();

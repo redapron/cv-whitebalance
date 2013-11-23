@@ -247,12 +247,6 @@ void drawCube_solvePnP(){
 	imagePoint.push_back(Point2f(center[0][0], center[0][1]));
 	imagePoint.push_back(Point2f(center[4][0], center[4][1]));
 
-	/*
-	imagePoint.push_back(Point2f(166, 335));
-	imagePoint.push_back(Point2f(244, 275));
-	imagePoint.push_back(Point2f(264, 388));
-	imagePoint.push_back(Point2f(333, 325));
-	*/
 	solvePnP(Mat(worldPoint), Mat(imagePoint), intrinsics, distortion, rotateVector, translateVector, false, CV_ITERATIVE);
 }
 
@@ -263,16 +257,13 @@ void drawCube_draw(){
 	rt = (Mat_<double>(3,4) << r[0], r[1], r[2], t[0], r[3], r[4], r[5], t[1], r[6], r[7], r[8], t[2]);
 
 	for (int k=0; k<4; k++){
-
 		Mat ans = intrinsics * rt * cubeCoor[k];
 		double* ans_array = ans.ptr<double>();
 		ans_array[0] = ans_array[0]/ans_array[2];
 		ans_array[1] = ans_array[1]/ans_array[2];
 		ans_array[2] = ans_array[2]/ans_array[2];
-		Mat newAns = (Mat_<double>(3,1) << ans_array[0], ans_array[1], ans_array[2]);
 
-		Point newPoint = Point(ans_array[0],ans_array[1]);
-		imagePoint.push_back(newPoint);
+		imagePoint.push_back(Point(ans_array[0],ans_array[1]));
 
 		/*
 		// debug
@@ -281,14 +272,29 @@ void drawCube_draw(){
 		cout << "translate" << endl << translateVector << endl << endl;
 		cout << "rt" << endl << rt << endl << endl;
 		cout << "ans" << endl << ans << endl << endl;
+		Mat newAns = (Mat_<double>(3,1) << ans_array[0], ans_array[1], ans_array[2]);
 		cout << "newAns" << endl << newAns << endl << endl;
 		*/
 	}
 
 	for (int k=0; k<8; k++){
 		circle(image, imagePoint[k], 5, Scalar(0,222,0),-1);
-		line(image, imagePoint[k], imagePoint[(k+1)%8], Scalar(0,222,0),2);
 	}
+
+	line(image, imagePoint[0], imagePoint[1], Scalar(0,222,0),2);
+	line(image, imagePoint[2], imagePoint[3], Scalar(0,222,0),2);
+	line(image, imagePoint[4], imagePoint[5], Scalar(0,222,0),2);
+	line(image, imagePoint[6], imagePoint[7], Scalar(0,222,0),2);
+
+	line(image, imagePoint[0], imagePoint[4], Scalar(0,222,0),2);
+	line(image, imagePoint[2], imagePoint[6], Scalar(0,222,0),2);
+	line(image, imagePoint[1], imagePoint[5], Scalar(0,222,0),2);
+	line(image, imagePoint[3], imagePoint[7], Scalar(0,222,0),2);
+
+	line(image, imagePoint[0], imagePoint[2], Scalar(0,222,0),2);
+	line(image, imagePoint[1], imagePoint[3], Scalar(0,222,0),2);
+	line(image, imagePoint[4], imagePoint[6], Scalar(0,222,0),2);
+	line(image, imagePoint[5], imagePoint[7], Scalar(0,222,0),2);
 }
 
 int main()
